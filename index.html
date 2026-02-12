@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <link rel="icon" href="/R1-01637-019A.JPG" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para o meu Amor ❤️</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        html, body {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: #fff0f5;
+            font-family: 'Arial', sans-serif;
+            position: fixed;
+        }
+
+        canvas { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 5; 
+            pointer-events: none;
+            transition: transform 1.5s ease-in-out;
+            transform-origin: bottom center;
+        }
+
+        #main-content {
+            position: relative;
+            display: flex;
+            justify-content: flex-end; 
+            align-items: center;
+            height: 100vh; width: 100vw;
+            padding-right: 8%;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 1s ease 1s;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 340px;
+        }
+
+        .sobre-nos {
+            color: #d63384;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        #footer-timer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: #d63384;
+            font-size: 0.8rem;
+            z-index: 100;
+            font-weight: bold;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            min-height: 80px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        #yesBtn { background-color: #ff4d6d; color: white; transition: transform 0.2s; }
+        #noBtn { background-color: #adb5bd; color: white; z-index: 9999; }
+
+        .hidden { display: none !important; }
+        img { width: 200px; border-radius: 15px; margin-bottom: 10px; }
+        h1 { color: #d63384; font-size: 1.2rem; margin-bottom: 5px; }
+        h2 { color: #d63384; font-size: 1.2rem; margin-bottom: 5px; }
+
+
+        /* Estilo Polaroid */
+        .polaroid-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+            width: 130px; /* Tamanho bom para telemóvel */
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover; /* Ajusta a foto ao quadrado */
+            border-radius: 2px;
+        }
+
+        /* Inclinando as fotos aleatoriamente */
+        .polaroid:nth-child(odd) { transform: rotate(-5deg); }
+        .polaroid:nth-child(even) { transform: rotate(5deg); }
+        .polaroid:hover { transform: scale(1.1) rotate(0deg); z-index: 100; }
+
+        /* Estilo do Botão Abrir Álbum */
+        #openAlbumBtn {
+            margin-top: 20px;
+            background-color: #ff4d6d;
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+
+        /* Botão para fechar o álbum */
+        .close-btn {
+            position: fixed;
+            top: 20px; right: 20px;
+            background: #adb5bd;
+            color: white;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 10001;
+        }
+       .album-grid {
+            column-count: 2; /* 2 colunas no telemóvel */
+            column-gap: 10px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .album-grid {
+                column-count: 3; /* 3 colunas no PC */
+            }
+        }
+
+        .foto-card {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .foto-card img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .foto-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Janela do Álbum (Overlay) */
+        #album-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #fff0f5; /* Fundo que combina com a árvore */
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .header-album {
+            padding: 20px;
+            text-align: center;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 11;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* --- TELEMÓVEL: SUBIDA MAIS SUAVE E SEM FICAR GIGANTE --- */
+        @media (max-width: 768px) {
+            #main-content { 
+                justify-content: center; 
+                padding-right: 0; 
+                align-items: flex-end; 
+                padding-bottom: 100px; 
+            }
+            
+            canvas.moved { 
+                /* Sobe menos para não sumir do topo, mas mantendo o tamanho real */
+                transform: translateY(-40%) !important; 
+            }
+
+            .card {
+                background: rgba(255, 255, 255, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="cherryCanvas"></canvas>
+
+    <div id="main-content">
+        <div id="quiz" class="card">
+            <img src="/R1-01636-0011.JPG">
+            <h1>Para o meu Amor ❤️</h1>
+            <h1>Aceitas ser o meu Valentine?</h1>
+            <br>
+            <div class="sobre-nos">
+                "Desde que entraste na minha vida, cada segundo tornou-se especial. AMO-TE MUITO PRINCESA"
+            </div>
+            <div class="buttons-container">
+                <button id="yesBtn">SIM!</button>
+                <button id="noBtn">Não</button>
+            </div>
+        </div>
+
+        <div id="celebration" class="card hidden">
+            <img src="/R1-01637-019A.JPG">
+            <h1>IHHHHHHHHHHH ❤️</h1>
+            <h2>Guarda a data meu amor, 14/02/26</h2>
+            <p style="font-size: 0.9rem; color: #d63384;">Obrigado por criares memórias comigo:</p>
+    
+            <div class="polaroid-gallery">
+                <div class="polaroid">
+                    <img src="/foto1.jpeg">
+                </div>
+                <div class="polaroid">
+                    <img src="/foto2.jpeg">
+                </div>
+                <div class="polaroid">
+                    <img src="/foto3.jpeg">
+                </div>
+            </div>
+            <button id="openAlbumBtn">Ver Álbum Completo ✨</button>
+        </div>
+
+        <div id="album-overlay">
+            <div class="header-album">
+                <span id="closeAlbum" style="float:right; cursor:pointer; font-size:1.5rem;">✕</span>
+                <h2 style="color:#d63384; margin:0;">A Nossa História ❤️</h2>
+            </div>
+
+            <div class="album-grid">
+                <div class="foto-card"><img src="/foto1.jpeg"></div>
+                <div class="foto-card"><img src="/foto2.jpeg"></div>
+                <div class="foto-card"><img src="/foto1.jpeg"></div>
+                <div class="foto-card"><img src="/foto1.jpeg"></div>
+                <div class="foto-card"><img src="/foto1.jpeg"></div>
+                <div class="foto-card"><img src="/foto3.jpeg"></div>
+                <div class="foto-card"><img src="/foto1.jpeg"></div>
+                <div class="foto-card"><img src="/R1-01636-0011.JPG"></div>
+                </div>
+        </div>
+    </div>
+
+    <div id="footer-timer">00D 00H 00M 00S JUNTOS</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const dataInicio = new Date(2025, 12, 2, 0, 0); 
+
+        function atualizarContador() {
+            const diff = new Date() - dataInicio;
+            const d = Math.floor(diff / (1000*60*60*24));
+            const h = Math.floor((diff / (1000*60*60)) % 24);
+            const m = Math.floor((diff / (1000*60)) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            document.getElementById('footer-timer').innerText = `${d}D ${h}H ${m}M ${s}S JUNTOS`;
+        }
+        setInterval(atualizarContador, 1000);
+
+        window.onload = () => {
+            setTimeout(() => {
+                const canvas = document.getElementById('cherryCanvas');
+                canvas.classList.add('moved');
+                if (window.innerWidth >= 768) {
+                    canvas.style.transform = 'translateX(-25%) scale(0.9)';
+                }
+                document.getElementById('main-content').style.opacity = '1';
+            }, 2000); 
+        };
+
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const phrases = ["Ca nada", "Tens a certeza?", "Pensa bem!", "Vou chorar :(", "APARIGA DIZ QUE SIMMMM", "BABADA DIZ SIMMMMMMMM"];
+        let count = 0;
+        let firstMove = true;
+
+        function fugir(e) {
+            if (e) e.preventDefault();
+            if (firstMove) {
+                document.body.appendChild(noBtn);
+                noBtn.style.position = 'fixed';
+                firstMove = false;
+            }
+            noBtn.innerText = phrases[count % phrases.length];
+            count++;
+            const maxX = window.innerWidth - noBtn.offsetWidth - 30;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 30;
+            noBtn.style.left = Math.max(30, Math.random() * maxX) + 'px';
+            noBtn.style.top = Math.max(30, Math.random() * maxY) + 'px';
+            
+            const currentScale = parseFloat(yesBtn.dataset.scale || 1);
+            const newScale = Math.min(currentScale + 0.1, 2.0);
+            yesBtn.style.transform = `scale(${newScale})`;
+            yesBtn.dataset.scale = newScale;
+        }
+
+        noBtn.addEventListener('mouseover', fugir);
+        noBtn.addEventListener('click', fugir);
+        noBtn.addEventListener('touchstart', fugir, {passive: false});
+
+        const canvas = document.getElementById('cherryCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; 
+        canvas.height = window.innerHeight;
+        let branches = [];
+
+        function addBranch(x, y, len, angle, width) { 
+            branches.push({ x, y, len, angle, width, currentLen: 0 }); 
+        }
+
+        function drawPetal(x, y) {
+            ctx.beginPath();
+            ctx.fillStyle = "#ffb7c5";
+            ctx.globalAlpha = 0.5;
+            ctx.arc(x, y, Math.random() * 3 + 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function animate() {
+            for (let i = branches.length - 1; i >= 0; i--) {
+                let b = branches[i];
+                if (b.currentLen < b.len) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#4b3621";
+                    ctx.lineWidth = b.width;
+                    ctx.lineCap = "round";
+                    ctx.translate(b.x, b.y);
+                    ctx.rotate(b.angle * Math.PI / 180);
+                    ctx.moveTo(0, 0);
+                    b.currentLen += 6; 
+                    ctx.lineTo(0, -b.currentLen);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    if (b.currentLen >= b.len) {
+                        const nX = b.x + Math.sin(b.angle * Math.PI / 180) * -b.len;
+                        const nY = b.y + Math.cos(b.angle * Math.PI / 180) * -b.len;
+                        
+                        if (b.width > 2.0) { // Ramifica enquanto o ramo for grosso
+                            const spread = 20 + Math.random() * 20;
+                            addBranch(nX, nY, b.len * 0.72, b.angle - spread, b.width * 0.7);
+                            addBranch(nX, nY, b.len * 0.72, b.angle + spread, b.width * 0.7);
+                        } else {
+                            for(let j=0; j<20; j++) {
+                                drawPetal(nX + (Math.random()-0.5)*45, nY + (Math.random()-0.5)*45);
+                            }
+                        }
+                        branches.splice(i, 1);
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // --- TRONCO REDUZIDO PARA NÃO FICAR GIGANTE ---
+        const isMobile = window.innerWidth < 768;
+        const startLen = isMobile ? canvas.height * 0.18 : canvas.height * 0.28;
+        addBranch(canvas.width/2, canvas.height, startLen, 0, 12);
+        animate();
+
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('quiz').classList.add('hidden');
+            document.getElementById('celebration').classList.remove('hidden');
+            noBtn.style.display = 'none';
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        });
+
+        const openBtn = document.getElementById('openAlbumBtn');
+        const albumOverlay = document.getElementById('album-overlay');
+        const closeBtn = document.getElementById('closeAlbum');
+
+        if (openBtn) {
+            openBtn.addEventListener('click', () => {
+                albumOverlay.style.display = 'flex';
+                // Impede o scroll do fundo ao ver as fotos
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                albumOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+    </script>
+</body>
+</html>
