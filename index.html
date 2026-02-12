@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <link rel="icon" href="R1-01637-019A.JPG" type="image/png">
+    <link rel="icon" href="/R1-01637-019A.JPG" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Para o meu Amor ❤️</title>
@@ -94,6 +94,37 @@
         h1 { color: #d63384; font-size: 1.2rem; margin-bottom: 5px; }
         h2 { color: #d63384; font-size: 1.2rem; margin-bottom: 5px; }
 
+
+        /* Estilo Polaroid */
+        .polaroid-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+            width: 130px; /* Tamanho bom para telemóvel */
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover; /* Ajusta a foto ao quadrado */
+            border-radius: 2px;
+        }
+
+        /* Inclinando as fotos aleatoriamente */
+        .polaroid:nth-child(odd) { transform: rotate(-5deg); }
+        .polaroid:nth-child(even) { transform: rotate(5deg); }
+        .polaroid:hover { transform: scale(1.1) rotate(0deg); z-index: 100; }
+
         /* --- TELEMÓVEL: SUBIDA MAIS SUAVE E SEM FICAR GIGANTE --- */
         @media (max-width: 768px) {
             #main-content { 
@@ -120,7 +151,7 @@
 
     <div id="main-content">
         <div id="quiz" class="card">
-            <img src="R1-01636-0011.JPG">
+            <img src="/R1-01636-0011.JPG">
             <h1>Para o meu Amor ❤️</h1>
             <h1>Aceitas ser o meu Valentine?</h1>
             <br>
@@ -134,9 +165,23 @@
         </div>
 
         <div id="celebration" class="card hidden">
-            <img src="R1-01637-019A.JPG">
+            <img src="/R1-01637-019A.JPG">
             <h1>IHHHHHHHHHHH ❤️</h1>
             <h2>Guarda a data meu amor, 14/02/26</h2>
+            <p style="font-size: 0.9rem; color: #d63384;">Obrigado por criares memórias comigo:</p>
+    
+            <div class="polaroid-gallery">
+                <div class="polaroid">
+                    <img src="/foto1.jpeg">
+                </div>
+                <div class="polaroid">
+                    <img src="/foto2.jpeg">
+                </div>
+                <div class="polaroid">
+                    <img src="/foto3.jpeg">
+                </div>
+            </div>
+            
         </div>
     </div>
 
@@ -267,6 +312,4 @@
         });
     </script>
 </body>
-
 </html>
-
